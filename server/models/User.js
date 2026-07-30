@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   profilePic: { type: String, default: '' },
+  bio: { type: String, default: '', maxlength: 150 }, // NEW
   likedSongs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],
   playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
