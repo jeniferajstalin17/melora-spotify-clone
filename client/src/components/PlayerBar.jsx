@@ -75,7 +75,7 @@ export default function PlayerBar() {
       <div className="flex-1 flex items-center gap-3">
         <button
           onClick={toggleShuffle}
-          className={`hidden sm:block transition ${isShuffle ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
+          className={`transition ${isShuffle ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
           title="Shuffle"
         >
           <Shuffle size={16} />
@@ -98,7 +98,7 @@ export default function PlayerBar() {
 
         <button
           onClick={cycleRepeatMode}
-          className={`hidden sm:block transition ${repeatMode !== 'off' ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
+          className={`transition ${repeatMode !== 'off' ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
           title={`Repeat: ${repeatMode}`}
         >
           {repeatMode === 'one' ? <Repeat1 size={16} /> : <Repeat size={16} />}
