@@ -12,6 +12,13 @@ export default function Home() {
   const { user, token } = useContext(AuthContext);
   const { currentSong, isPlaying, playSong } = useContext(PlayerContext);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   const fetchSongs = async () => {
     setLoading(true);
     try {
@@ -77,7 +84,7 @@ export default function Home() {
   return (
     <div className="p-8 text-white">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Good evening, {user?.username}</h1>
+        <h1 className="text-3xl font-bold">{getGreeting()}, {user?.username}</h1>
         <p className="text-gray-400 mt-1">Here's what's playing</p>
       </div>
 
