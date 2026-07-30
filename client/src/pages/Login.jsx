@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import { Music2 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,8 +34,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-b from-neutral-900 to-black flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-green-500 rounded-full p-3 mb-4">
-            <Music2 size={28} className="text-black" />
+          <div className="mb-4">
+            <Logo size={56} />
           </div>
           <h1 className="text-2xl font-bold text-white">Welcome back</h1>
           <p className="text-gray-400 text-sm mt-1">Log in to continue listening</p>
@@ -58,7 +58,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-neutral-800 text-white placeholder-gray-500 border border-transparent focus:outline-none focus:border-green-500 transition"
+              className="w-full px-4 py-3 rounded-lg bg-neutral-800 text-white placeholder-gray-500 border border-transparent focus:outline-none focus:border-blue-500 transition"
             />
           </div>
 
@@ -72,21 +72,21 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-lg bg-neutral-800 text-white placeholder-gray-500 border border-transparent focus:outline-none focus:border-green-500 transition"
+              className="w-full px-4 py-3 rounded-lg bg-neutral-800 text-white placeholder-gray-500 border border-transparent focus:outline-none focus:border-blue-500 transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-full bg-green-500 hover:bg-green-400 text-black font-bold transition disabled:opacity-50"
+            className="w-full py-3 rounded-full bg-blue-500 hover:bg-blue-400 text-black font-bold transition disabled:opacity-50"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
 
           <p className="text-center text-gray-400 text-sm mt-6">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-green-500 hover:underline font-semibold">
+            <Link to="/signup" className="text-blue-500 hover:underline font-semibold">
               Sign up
             </Link>
           </p>
