@@ -124,7 +124,7 @@ export default function Home() {
                   </button>
                 )}
 
-                <div onClick={() => playSong(song)} className="relative mb-4 cursor-pointer">
+                <div onClick={() => playSong(song, songs)} className="relative mb-4 cursor-pointer">
                   {song.coverUrl ? (
                     <img
                       src={song.coverUrl}

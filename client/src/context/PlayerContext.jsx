@@ -7,9 +7,12 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [queue, setQueue] = useState([]); // NEW: list of songs currently playing from
   const audioRef = useRef(new Audio());
 
-  const playSong = (song) => {
+  // playSong now optionally accepts the full song list it was played from,
+  // so we know what "next" means.
+  const playSong = (song, songList = []) => {
     if (currentSong?._id === song._id) {
       togglePlay();
       return;
@@ -18,6 +21,10 @@ export const PlayerProvider = ({ children }) => {
     audioRef.current.play();
     setCurrentSong(song);
     setIsPlaying(true);
+
+    if (songList.length > 0) {
+      setQueue(songList);
+    }
   };
 
   const togglePlay = () => {
@@ -34,7 +41,7 @@ export const PlayerProvider = ({ children }) => {
     setProgress(time);
   };
 
-  // NEW: stop playback completely (used on logout)
+  // stop playback completely (used on logout)
   const stopPlayback = () => {
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
@@ -44,13 +51,37 @@ export const PlayerProvider = ({ children }) => {
     setIsPlaying(false);
     setProgress(0);
     setDuration(0);
+    setQueue([]);
   };
 
   useEffect(() => {
     const audio = audioRef.current;
     const updateProgress = () => setProgress(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
-    const handleEnd = () => setIsPlaying(false);
+
+    // NEW: when song ends, auto-play the next song in the queue
+    const handleEnd = () => {
+      setIsPlaying(false);
+
+      setCurrentSong((prevSong) => {
+        setQueue((prevQueue) => {
+          if (prevQueue.length === 0) return prevQueue;
+
+          const currentIndex = prevQueue.findIndex((s) => s._id === prevSong?._id);
+          const nextSong = prevQueue[currentIndex + 1];
+
+          if (nextSong) {
+            audio.src = nextSong.audioUrl;
+            audio.play();
+            setCurrentSong(nextSong);
+            setIsPlaying(true);
+          }
+
+          return prevQueue;
+        });
+        return prevSong;
+      });
+    };
 
     audio.addEventListener('timeupdate', updateProgress);
     audio.addEventListener('loadedmetadata', updateDuration);
@@ -65,7 +96,7 @@ export const PlayerProvider = ({ children }) => {
 
   return (
     <PlayerContext.Provider
-      value={{ currentSong, isPlaying, progress, duration, playSong, togglePlay, seek, stopPlayback }}
+      value={{ currentSong, isPlaying, progress, duration, queue, playSong, togglePlay, seek, stopPlayback }}
     >
       {children}
     </PlayerContext.Provider>
