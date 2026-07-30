@@ -75,7 +75,7 @@ export default function PlayerBar() {
       <div className="flex-1 flex items-center gap-3">
         <button
           onClick={toggleShuffle}
-          className={`hidden sm:block transition ${isShuffle ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+          className={`hidden sm:block transition ${isShuffle ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
           title="Shuffle"
         >
           <Shuffle size={16} />
@@ -98,7 +98,7 @@ export default function PlayerBar() {
 
         <button
           onClick={cycleRepeatMode}
-          className={`hidden sm:block transition ${repeatMode !== 'off' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+          className={`hidden sm:block transition ${repeatMode !== 'off' ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
           title={`Repeat: ${repeatMode}`}
         >
           {repeatMode === 'one' ? <Repeat1 size={16} /> : <Repeat size={16} />}
@@ -112,7 +112,7 @@ export default function PlayerBar() {
           max="100"
           value={progressPercent || 0}
           onChange={handleSeek}
-          className="flex-1 h-1 accent-green-500 cursor-pointer"
+          className="flex-1 h-1 accent-blue-500 cursor-pointer"
         />
 
         <span className="text-xs text-gray-400 w-10 hidden sm:block">{formatTime(duration)}</span>
@@ -129,7 +129,7 @@ export default function PlayerBar() {
           max="100"
           value={volume * 100}
           onChange={handleVolumeChange}
-          className="w-20 md:w-24 h-1 accent-green-500 cursor-pointer"
+          className="w-20 md:w-24 h-1 accent-blue-500 cursor-pointer"
         />
       </div>
     </div>

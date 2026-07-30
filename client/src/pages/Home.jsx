@@ -92,7 +92,7 @@ export default function Home() {
 
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
 
@@ -159,8 +159,8 @@ export default function Home() {
                   <button onClick={(e) => handleLike(song._id, e)} className="flex-shrink-0 ml-2">
                     <Heart
                       size={18}
-                      fill={isLiked ? '#1DB954' : 'none'}
-                      color={isLiked ? '#1DB954' : '#9ca3af'}
+                      fill={isLiked ? '#3B82F6' : 'none'}
+                      color={isLiked ? '#3B82F6' : '#9ca3af'}
                       className="hover:scale-110 transition"
                     />
                   </button>
