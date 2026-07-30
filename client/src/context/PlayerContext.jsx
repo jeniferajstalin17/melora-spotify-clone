@@ -7,11 +7,13 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [queue, setQueue] = useState([]); // NEW: list of songs currently playing from
+  const [queue, setQueue] = useState([]); // list of songs currently playing from
+  const [isShuffle, setIsShuffle] = useState(false); // NEW
+  const [repeatMode, setRepeatMode] = useState('off'); // NEW: 'off' | 'all' | 'one'
   const audioRef = useRef(new Audio());
 
-  // playSong now optionally accepts the full song list it was played from,
-  // so we know what "next" means.
+  // playSong optionally accepts the full song list it was played from,
+  // so we know what "next"/"previous" means.
   const playSong = (song, songList = []) => {
     if (currentSong?._id === song._id) {
       togglePlay();
@@ -41,6 +43,53 @@ export const PlayerProvider = ({ children }) => {
     setProgress(time);
   };
 
+  // NEW: play the previous song in the queue
+  const playPrevious = () => {
+    if (queue.length === 0 || !currentSong) return;
+    const currentIndex = queue.findIndex((s) => s._id === currentSong._id);
+    const prevSong = queue[currentIndex - 1];
+    if (prevSong) {
+      audioRef.current.src = prevSong.audioUrl;
+      audioRef.current.play();
+      setCurrentSong(prevSong);
+      setIsPlaying(true);
+    }
+  };
+
+  // NEW: manually skip to next song (used by a Next button, and by auto-advance)
+  const playNext = () => {
+    if (queue.length === 0 || !currentSong) return;
+    const currentIndex = queue.findIndex((s) => s._id === currentSong._id);
+
+    let nextSong;
+    if (isShuffle) {
+      const otherSongs = queue.filter((_, idx) => idx !== currentIndex);
+      if (otherSongs.length > 0) {
+        nextSong = otherSongs[Math.floor(Math.random() * otherSongs.length)];
+      }
+    } else {
+      nextSong = queue[currentIndex + 1] || (repeatMode === 'all' ? queue[0] : null);
+    }
+
+    if (nextSong) {
+      audioRef.current.src = nextSong.audioUrl;
+      audioRef.current.play();
+      setCurrentSong(nextSong);
+      setIsPlaying(true);
+    }
+  };
+
+  const toggleShuffle = () => setIsShuffle((prev) => !prev);
+
+  // Cycles: off -> all -> one -> off
+  const cycleRepeatMode = () => {
+    setRepeatMode((prev) => {
+      if (prev === 'off') return 'all';
+      if (prev === 'all') return 'one';
+      return 'off';
+    });
+  };
+
   // stop playback completely (used on logout)
   const stopPlayback = () => {
     audioRef.current.pause();
@@ -59,22 +108,45 @@ export const PlayerProvider = ({ children }) => {
     const updateProgress = () => setProgress(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
 
-    // NEW: when song ends, auto-play the next song in the queue
+    // when song ends, decide what plays next based on repeat/shuffle
     const handleEnd = () => {
-      setIsPlaying(false);
-
       setCurrentSong((prevSong) => {
         setQueue((prevQueue) => {
-          if (prevQueue.length === 0) return prevQueue;
+          if (prevQueue.length === 0) {
+            setIsPlaying(false);
+            return prevQueue;
+          }
+
+          // Repeat one: replay the same song
+          if (repeatMode === 'one') {
+            audio.currentTime = 0;
+            audio.play();
+            setIsPlaying(true);
+            return prevQueue;
+          }
 
           const currentIndex = prevQueue.findIndex((s) => s._id === prevSong?._id);
-          const nextSong = prevQueue[currentIndex + 1];
+          let nextSong;
+
+          if (isShuffle) {
+            const otherSongs = prevQueue.filter((_, idx) => idx !== currentIndex);
+            if (otherSongs.length > 0) {
+              nextSong = otherSongs[Math.floor(Math.random() * otherSongs.length)];
+            }
+          } else {
+            nextSong = prevQueue[currentIndex + 1];
+            if (!nextSong && repeatMode === 'all') {
+              nextSong = prevQueue[0];
+            }
+          }
 
           if (nextSong) {
             audio.src = nextSong.audioUrl;
             audio.play();
             setCurrentSong(nextSong);
             setIsPlaying(true);
+          } else {
+            setIsPlaying(false);
           }
 
           return prevQueue;
@@ -92,11 +164,28 @@ export const PlayerProvider = ({ children }) => {
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnd);
     };
-  }, []);
+    // isShuffle/repeatMode included so handleEnd always sees the latest values
+  }, [isShuffle, repeatMode]);
 
   return (
     <PlayerContext.Provider
-      value={{ currentSong, isPlaying, progress, duration, queue, playSong, togglePlay, seek, stopPlayback }}
+      value={{
+        currentSong,
+        isPlaying,
+        progress,
+        duration,
+        queue,
+        isShuffle,
+        repeatMode,
+        playSong,
+        togglePlay,
+        seek,
+        stopPlayback,
+        playPrevious,
+        playNext,
+        toggleShuffle,
+        cycleRepeatMode,
+      }}
     >
       {children}
     </PlayerContext.Provider>

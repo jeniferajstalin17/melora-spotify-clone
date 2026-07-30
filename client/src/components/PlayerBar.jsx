@@ -1,9 +1,22 @@
 import { useContext } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
-import { Play, Pause, Music2 } from 'lucide-react';
+import { Play, Pause, Music2, SkipBack, SkipForward, Shuffle, Repeat, Repeat1 } from 'lucide-react';
 
 export default function PlayerBar() {
-  const { currentSong, isPlaying, progress, duration, togglePlay, seek } = useContext(PlayerContext);
+  const {
+    currentSong,
+    isPlaying,
+    progress,
+    duration,
+    isShuffle,
+    repeatMode,
+    togglePlay,
+    seek,
+    playPrevious,
+    playNext,
+    toggleShuffle,
+    cycleRepeatMode,
+  } = useContext(PlayerContext);
 
   if (!currentSong) return null;
 
@@ -38,11 +51,48 @@ export default function PlayerBar() {
       </div>
 
       <div className="flex-1 flex items-center gap-3">
+        {/* Shuffle */}
+        <button
+          onClick={toggleShuffle}
+          className={`hidden sm:block transition ${isShuffle ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+          title="Shuffle"
+        >
+          <Shuffle size={16} />
+        </button>
+
+        {/* Previous */}
+        <button
+          onClick={playPrevious}
+          className="text-gray-300 hover:text-white transition flex-shrink-0"
+          title="Previous"
+        >
+          <SkipBack size={18} fill="currentColor" />
+        </button>
+
+        {/* Play / Pause */}
         <button
           onClick={togglePlay}
           className="bg-white hover:scale-105 rounded-full p-2 transition flex-shrink-0"
         >
           {isPlaying ? <Pause size={18} fill="black" color="black" /> : <Play size={18} fill="black" color="black" />}
+        </button>
+
+        {/* Next */}
+        <button
+          onClick={playNext}
+          className="text-gray-300 hover:text-white transition flex-shrink-0"
+          title="Next"
+        >
+          <SkipForward size={18} fill="currentColor" />
+        </button>
+
+        {/* Repeat: off -> all -> one */}
+        <button
+          onClick={cycleRepeatMode}
+          className={`hidden sm:block transition ${repeatMode !== 'off' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+          title={`Repeat: ${repeatMode}`}
+        >
+          {repeatMode === 'one' ? <Repeat1 size={16} /> : <Repeat size={16} />}
         </button>
 
         <span className="text-xs text-gray-400 w-10 text-right hidden sm:block">{formatTime(progress)}</span>
