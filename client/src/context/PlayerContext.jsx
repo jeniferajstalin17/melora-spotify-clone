@@ -7,19 +7,20 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [queue, setQueue] = useState([]); // list of songs currently playing from
-  const [isShuffle, setIsShuffle] = useState(false); // NEW
-  const [repeatMode, setRepeatMode] = useState('off'); // NEW: 'off' | 'all' | 'one'
+  const [queue, setQueue] = useState([]);
+  const [isShuffle, setIsShuffle] = useState(false);
+  const [repeatMode, setRepeatMode] = useState('off'); // 'off' | 'all' | 'one'
+  const [volume, setVolumeState] = useState(1); // NEW: 0 to 1
+  const [previousVolume, setPreviousVolume] = useState(1); // NEW: for mute/unmute toggle
   const audioRef = useRef(new Audio());
 
-  // playSong optionally accepts the full song list it was played from,
-  // so we know what "next"/"previous" means.
   const playSong = (song, songList = []) => {
     if (currentSong?._id === song._id) {
       togglePlay();
       return;
     }
     audioRef.current.src = song.audioUrl;
+    audioRef.current.volume = volume;
     audioRef.current.play();
     setCurrentSong(song);
     setIsPlaying(true);
@@ -43,7 +44,23 @@ export const PlayerProvider = ({ children }) => {
     setProgress(time);
   };
 
-  // NEW: play the previous song in the queue
+  // NEW: set volume (0 to 1) and keep the <audio> element in sync
+  const setVolume = (value) => {
+    const clamped = Math.min(1, Math.max(0, value));
+    audioRef.current.volume = clamped;
+    setVolumeState(clamped);
+  };
+
+  // NEW: mute/unmute toggle button
+  const toggleMute = () => {
+    if (volume > 0) {
+      setPreviousVolume(volume);
+      setVolume(0);
+    } else {
+      setVolume(previousVolume || 1);
+    }
+  };
+
   const playPrevious = () => {
     if (queue.length === 0 || !currentSong) return;
     const currentIndex = queue.findIndex((s) => s._id === currentSong._id);
@@ -56,7 +73,6 @@ export const PlayerProvider = ({ children }) => {
     }
   };
 
-  // NEW: manually skip to next song (used by a Next button, and by auto-advance)
   const playNext = () => {
     if (queue.length === 0 || !currentSong) return;
     const currentIndex = queue.findIndex((s) => s._id === currentSong._id);
@@ -81,7 +97,6 @@ export const PlayerProvider = ({ children }) => {
 
   const toggleShuffle = () => setIsShuffle((prev) => !prev);
 
-  // Cycles: off -> all -> one -> off
   const cycleRepeatMode = () => {
     setRepeatMode((prev) => {
       if (prev === 'off') return 'all';
@@ -90,7 +105,6 @@ export const PlayerProvider = ({ children }) => {
     });
   };
 
-  // stop playback completely (used on logout)
   const stopPlayback = () => {
     audioRef.current.pause();
     audioRef.current.currentTime = 0;
@@ -108,7 +122,6 @@ export const PlayerProvider = ({ children }) => {
     const updateProgress = () => setProgress(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
 
-    // when song ends, decide what plays next based on repeat/shuffle
     const handleEnd = () => {
       setCurrentSong((prevSong) => {
         setQueue((prevQueue) => {
@@ -117,7 +130,6 @@ export const PlayerProvider = ({ children }) => {
             return prevQueue;
           }
 
-          // Repeat one: replay the same song
           if (repeatMode === 'one') {
             audio.currentTime = 0;
             audio.play();
@@ -164,7 +176,6 @@ export const PlayerProvider = ({ children }) => {
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnd);
     };
-    // isShuffle/repeatMode included so handleEnd always sees the latest values
   }, [isShuffle, repeatMode]);
 
   return (
@@ -177,6 +188,7 @@ export const PlayerProvider = ({ children }) => {
         queue,
         isShuffle,
         repeatMode,
+        volume, // NEW
         playSong,
         togglePlay,
         seek,
@@ -185,6 +197,8 @@ export const PlayerProvider = ({ children }) => {
         playNext,
         toggleShuffle,
         cycleRepeatMode,
+        setVolume, // NEW
+        toggleMute, // NEW
       }}
     >
       {children}

@@ -1,6 +1,18 @@
 import { useContext } from 'react';
 import { PlayerContext } from '../context/PlayerContext';
-import { Play, Pause, Music2, SkipBack, SkipForward, Shuffle, Repeat, Repeat1 } from 'lucide-react';
+import {
+  Play,
+  Pause,
+  Music2,
+  SkipBack,
+  SkipForward,
+  Shuffle,
+  Repeat,
+  Repeat1,
+  Volume2,
+  Volume1,
+  VolumeX,
+} from 'lucide-react';
 
 export default function PlayerBar() {
   const {
@@ -10,12 +22,15 @@ export default function PlayerBar() {
     duration,
     isShuffle,
     repeatMode,
+    volume,
     togglePlay,
     seek,
     playPrevious,
     playNext,
     toggleShuffle,
     cycleRepeatMode,
+    setVolume,
+    toggleMute,
   } = useContext(PlayerContext);
 
   if (!currentSong) return null;
@@ -32,7 +47,14 @@ export default function PlayerBar() {
     seek(newTime);
   };
 
+  const handleVolumeChange = (e) => {
+    setVolume(e.target.value / 100);
+  };
+
   const progressPercent = duration ? (progress / duration) * 100 : 0;
+
+  // pick the right speaker icon based on volume level
+  const VolumeIcon = volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   return (
     <div className="fixed bottom-0 left-0 md:left-64 right-0 bg-neutral-900 border-t border-neutral-800 px-4 md:px-6 py-3 flex items-center gap-4 z-40">
@@ -51,7 +73,6 @@ export default function PlayerBar() {
       </div>
 
       <div className="flex-1 flex items-center gap-3">
-        {/* Shuffle */}
         <button
           onClick={toggleShuffle}
           className={`hidden sm:block transition ${isShuffle ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
@@ -60,16 +81,10 @@ export default function PlayerBar() {
           <Shuffle size={16} />
         </button>
 
-        {/* Previous */}
-        <button
-          onClick={playPrevious}
-          className="text-gray-300 hover:text-white transition flex-shrink-0"
-          title="Previous"
-        >
+        <button onClick={playPrevious} className="text-gray-300 hover:text-white transition flex-shrink-0" title="Previous">
           <SkipBack size={18} fill="currentColor" />
         </button>
 
-        {/* Play / Pause */}
         <button
           onClick={togglePlay}
           className="bg-white hover:scale-105 rounded-full p-2 transition flex-shrink-0"
@@ -77,16 +92,10 @@ export default function PlayerBar() {
           {isPlaying ? <Pause size={18} fill="black" color="black" /> : <Play size={18} fill="black" color="black" />}
         </button>
 
-        {/* Next */}
-        <button
-          onClick={playNext}
-          className="text-gray-300 hover:text-white transition flex-shrink-0"
-          title="Next"
-        >
+        <button onClick={playNext} className="text-gray-300 hover:text-white transition flex-shrink-0" title="Next">
           <SkipForward size={18} fill="currentColor" />
         </button>
 
-        {/* Repeat: off -> all -> one */}
         <button
           onClick={cycleRepeatMode}
           className={`hidden sm:block transition ${repeatMode !== 'off' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
@@ -109,7 +118,20 @@ export default function PlayerBar() {
         <span className="text-xs text-gray-400 w-10 hidden sm:block">{formatTime(duration)}</span>
       </div>
 
-      <div className="w-64 hidden md:block"></div>
+      {/* NEW: Volume control */}
+      <div className="w-32 md:w-64 hidden md:flex items-center gap-2">
+        <button onClick={toggleMute} className="text-gray-400 hover:text-white transition flex-shrink-0" title="Mute">
+          <VolumeIcon size={18} />
+        </button>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={volume * 100}
+          onChange={handleVolumeChange}
+          className="w-20 md:w-24 h-1 accent-green-500 cursor-pointer"
+        />
+      </div>
     </div>
   );
 }
