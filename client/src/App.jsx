@@ -11,6 +11,7 @@ import Library from './pages/Library';
 import PlaylistDetail from './pages/PlaylistDetail';
 import ArtistProfile from './pages/ArtistProfile';
 import LikedSongs from './pages/LikedSongs';
+import EditProfile from './pages/EditProfile';
 import Sidebar from './components/Sidebar';
 import PlayerBar from './components/PlayerBar';
 
@@ -103,6 +104,17 @@ function AppRoutes() {
           <PrivateRoute>
             <Layout>
               <ArtistProfile />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      {/* NEW: Edit Profile route */}
+      <Route
+        path="/edit-profile"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <EditProfile />
             </Layout>
           </PrivateRoute>
         }

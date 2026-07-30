@@ -31,8 +31,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
+  // NEW: update the logged-in user's info (e.g. after editing profile)
+  // without needing to log out/in again.
+  const updateUser = (updatedFields) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser, ...updatedFields };
+      localStorage.setItem('user', JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

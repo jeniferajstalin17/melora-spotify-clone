@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import { Home, Search, Library, PlusSquare, LogOut, Heart, Menu, X } from 'lucide-react';
+import { Home, Search, Library, PlusSquare, LogOut, Heart, Menu, X, User as UserIcon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { PlayerContext } from '../context/PlayerContext';
 import Logo from './Logo';
@@ -81,7 +81,28 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto pt-6 border-t border-gray-800">
-          <p className="text-sm text-gray-400 mb-3 truncate">Hi, {user?.username}</p>
+          {/* Profile section - now links to Edit Profile */}
+          <Link
+            onClick={handleLinkClick}
+            to="/edit-profile"
+            className="flex items-center gap-3 mb-3 hover:text-blue-500 transition group"
+          >
+            {user?.profilePic ? (
+              <img
+                src={user.profilePic}
+                alt={user.username}
+                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center flex-shrink-0">
+                <UserIcon size={16} className="text-gray-400" />
+              </div>
+            )}
+            <p className="text-sm text-gray-400 truncate group-hover:text-blue-500">
+              Hi, {user?.username}
+            </p>
+          </Link>
+
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 text-gray-400 hover:text-red-500 transition w-full"
