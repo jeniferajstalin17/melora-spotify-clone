@@ -17,7 +17,7 @@ export default function PlaylistDetail() {
   const fetchPlaylist = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/playlists/${id}`);
+      const res = await axios.get(`https://melora-spotify-clone.onrender.com/api/playlists/${id}`);
       setPlaylist(res.data);
     } catch (err) {
       console.log(err);
@@ -28,7 +28,7 @@ export default function PlaylistDetail() {
 
   const fetchAllSongs = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/songs');
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/songs');
       setAllSongs(res.data);
     } catch (err) {
       console.log(err);
@@ -43,7 +43,7 @@ export default function PlaylistDetail() {
   const handleAddSong = async (songId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/playlists/${id}/add-song`,
+        `https://melora-spotify-clone.onrender.com/api/playlists/${id}/add-song`,
         { songId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -57,7 +57,7 @@ export default function PlaylistDetail() {
     e.stopPropagation();
     try {
       await axios.put(
-        `http://localhost:5000/api/playlists/${id}/remove-song`,
+        `https://melora-spotify-clone.onrender.com/api/playlists/${id}/remove-song`,
         { songId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

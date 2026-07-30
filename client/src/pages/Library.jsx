@@ -15,7 +15,7 @@ export default function Library() {
   const fetchPlaylists = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/playlists/mine', {
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/playlists/mine', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPlaylists(res.data);
@@ -36,7 +36,7 @@ export default function Library() {
     setCreating(true);
     try {
       await axios.post(
-        'http://localhost:5000/api/playlists',
+        'https://melora-spotify-clone.onrender.com/api/playlists',
         { name },
         { headers: { Authorization: `Bearer ${token}` } }
       );

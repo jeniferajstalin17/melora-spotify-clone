@@ -15,7 +15,7 @@ export default function Home() {
   const fetchSongs = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/songs');
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/songs');
       setSongs(res.data);
     } catch (err) {
       console.log(err);
@@ -27,7 +27,7 @@ export default function Home() {
   const fetchLiked = async () => {
     if (!token) return;
     try {
-      const res = await axios.get('http://localhost:5000/api/songs/user/liked', {
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/songs/user/liked', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLikedIds(res.data.map((s) => s._id));
@@ -45,7 +45,7 @@ export default function Home() {
     e.stopPropagation();
     if (!window.confirm('Delete this song?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/songs/${id}`, {
+      await axios.delete(`https://melora-spotify-clone.onrender.com/api/songs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSongs(songs.filter((s) => s._id !== id));
@@ -59,12 +59,12 @@ export default function Home() {
     const isLiked = likedIds.includes(id);
     try {
       if (isLiked) {
-        await axios.put(`http://localhost:5000/api/songs/${id}/unlike`, {}, {
+        await axios.put(`https://melora-spotify-clone.onrender.com/api/songs/${id}/unlike`, {}, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLikedIds(likedIds.filter((likedId) => likedId !== id));
       } else {
-        await axios.put(`http://localhost:5000/api/songs/${id}/like`, {}, {
+        await axios.put(`https://melora-spotify-clone.onrender.com/api/songs/${id}/like`, {}, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLikedIds([...likedIds, id]);

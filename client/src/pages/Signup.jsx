@@ -18,7 +18,7 @@ export default function Signup() {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/signup', {
+      const res = await axios.post('https://melora-spotify-clone.onrender.com/api/auth/signup', {
         username,
         email,
         password,

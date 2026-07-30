@@ -14,7 +14,7 @@ export default function LikedSongs() {
   const fetchLiked = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/songs/user/liked', {
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/songs/user/liked', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSongs(res.data);
@@ -32,7 +32,7 @@ export default function LikedSongs() {
   const handleUnlike = async (id, e) => {
     e.stopPropagation();
     try {
-      await axios.put(`http://localhost:5000/api/songs/${id}/unlike`, {}, {
+      await axios.put(`https://melora-spotify-clone.onrender.com/api/songs/${id}/unlike`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSongs(songs.filter((s) => s._id !== id));

@@ -19,7 +19,7 @@ export default function Search() {
     setLoading(true);
     setSearched(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/songs/search?q=${encodeURIComponent(query)}`);
+      const res = await axios.get(`https://melora-spotify-clone.onrender.com/api/songs/search?q=${encodeURIComponent(query)}`);
       setResults(res.data);
     } catch (err) {
       console.log(err);
@@ -32,7 +32,7 @@ export default function Search() {
     e.stopPropagation();
     if (!window.confirm('Delete this song?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/songs/${id}`, {
+      await axios.delete(`https://melora-spotify-clone.onrender.com/api/songs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setResults(results.filter((s) => s._id !== id));

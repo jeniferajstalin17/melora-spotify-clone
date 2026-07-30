@@ -32,7 +32,7 @@ export default function Upload() {
 
     setUploading(true);
     try {
-      await axios.post('http://localhost:5000/api/songs/upload', formData, {
+      await axios.post('https://melora-spotify-clone.onrender.com/api/songs/upload', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

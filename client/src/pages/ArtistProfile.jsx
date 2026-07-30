@@ -16,7 +16,7 @@ export default function ArtistProfile() {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${id}`);
+      const res = await axios.get(`https://melora-spotify-clone.onrender.com/api/users/${id}`);
       setProfile(res.data);
     } catch (err) {
       console.log(err);
@@ -28,7 +28,7 @@ export default function ArtistProfile() {
   const checkFollowing = async () => {
     if (!token) return;
     try {
-      const res = await axios.get('http://localhost:5000/api/users/me/following', {
+      const res = await axios.get('https://melora-spotify-clone.onrender.com/api/users/me/following', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setIsFollowing(res.data.some((u) => u._id === id));
@@ -46,14 +46,14 @@ export default function ArtistProfile() {
     try {
       if (isFollowing) {
         await axios.put(
-          `http://localhost:5000/api/users/${id}/unfollow`,
+          `https://melora-spotify-clone.onrender.com/api/users/${id}/unfollow`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setIsFollowing(false);
       } else {
         await axios.put(
-          `http://localhost:5000/api/users/${id}/follow`,
+          `https://melora-spotify-clone.onrender.com/api/users/${id}/follow`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
